@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico UNAH - Perfil Ingeniería (Matemática y Ciencias)</title>
+    <style>
+        :root {
+            --primary: #003399;
+            --secondary: #FFE000;
+            --bg: #f4f6f9;
+            --card: #ffffff;
+            --text-main: #1e293b;
+            --text-sec: #64748b;
+            --success: #16a34a;
+            --error: #dc2626;
+            --warn: #d97706;
+            --correct-bg: #dcfce7;
+            --incorrect-bg: #fee2e2;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: #fff;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--secondary);
+        }
+
+        .header-brand { font-weight: 700; font-size: 1rem; letter-spacing: 0.4px; }
+        .timer-badge {
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.95rem;
+        }
+        .timer-badge.urgent { background: #991b1b; color: #fff; border-color: #fca5a5; }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 18px;
+        }
+
+        .container {
+            background: var(--card);
+            width: 100%;
+            max-width: 840px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 51, 153, 0.1);
+            overflow: hidden;
+        }
+
+        .card-body { padding: 36px; }
+
+        .logos-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+            margin-bottom: 22px;
+        }
+        .logos-container img {
+            height: 68px;
+            width: auto;
+            object-fit: contain;
+            background: #fff;
+            padding: 6px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .login-title { color: var(--primary); font-size: 1.8rem; text-align: center; margin-bottom: 10px; }
+        .login-desc { color: var(--text-sec); text-align: center; line-height: 1.6; margin-bottom: 24px; font-size: 0.96rem; }
+        .login-instructions {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 16px 18px;
+            margin-bottom: 26px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 7px; color: var(--primary); }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.25s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 224, 0, 0.35);
+        }
+
+        .teacher-info { text-align: center; font-style: italic; color: var(--text-sec); margin-top: 18px; font-size: 0.92rem; }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 26px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: 2px solid var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .btn-primary { background: var(--primary); color: #fff; width: 100%; }
+        .btn-primary:hover:not(:disabled) { background: var(--secondary); color: var(--primary); transform: translateY(-1px); }
+        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; border-color: #94a3b8; }
+
+        .btn-nav { background: var(--primary); color: #fff; }
+        .btn-nav:hover:not(:disabled) { background: var(--secondary); color: var(--primary); }
+        .btn-nav:disabled { background: #94a3b8; cursor: not-allowed; border-color: #94a3b8; }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            height: 11px;
+            width: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.4s ease;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .q-number {
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.88rem;
+        }
+        .q-meta { display: flex; gap: 8px; align-items: center; }
+        .q-tag {
+            background: #e2e8f0;
+            color: var(--text-main);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.18rem;
+            font-weight: 600;
+            line-height: 1.55;
+            margin-bottom: 18px;
+            color: var(--text-main);
+        }
+
+        .figure-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .figure-box svg { max-width: 100%; height: auto; }
+        .figure-caption { font-size: 0.82rem; color: var(--text-sec); margin-top: 8px; }
+
+        .options-grid { display: flex; flex-direction: column; gap: 11px; }
+        .option-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 14px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.98rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .option-btn:hover:not(.validated) { border-color: var(--primary); background: #eff6ff; }
+        .option-btn.selected { border-color: var(--secondary); background: #fffbeb; font-weight: 600; }
+        .option-btn .letter {
+            background: var(--primary);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.88rem;
+            flex-shrink: 0;
+        }
+        .option-btn.selected .letter { background: var(--secondary); color: var(--primary); }
+        .option-btn.validated { cursor: default; pointer-events: none; }
+        .option-btn.correct { border-color: var(--success); background: var(--correct-bg); }
+        .option-btn.correct .letter { background: var(--success); color: #fff; }
+        .option-btn.incorrect { border-color: var(--error); background: var(--incorrect-bg); }
+        .option-btn.incorrect .letter { background: var(--error); color: #fff; }
+
+        .sa-input {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+        }
+        .sa-input:focus { outline: none; border-color: var(--primary); }
+        .sa-input.correct { border-color: var(--success); background: var(--correct-bg); }
+        .sa-input.incorrect { border-color: var(--error); background: var(--incorrect-bg); }
+
+        .feedback-box {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 0.96rem;
+            line-height: 1.55;
+            display: none;
+        }
+        .feedback-box.show { display: block; }
+        .feedback-box.correct { background: var(--correct-bg); border: 2px solid var(--success); color: #14532d; }
+        .feedback-box.incorrect { background: var(--incorrect-bg); border: 2px solid var(--error); color: #7f1d1d; }
+        .feedback-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; }
+
+        .nav-actions { display: flex; justify-content: flex-end; margin-top: 26px; gap: 12px; }
+
+        /* RESULT & FODA CARD */
+        .diploma-box {
+            border: 3px solid var(--primary);
+            background: linear-gradient(160deg, #ffffff 0%, #fffdf2 100%);
+            padding: 34px 26px;
+            border-radius: 14px;
+        }
+        .diploma-header { text-align: center; margin-bottom: 20px; }
+        .diploma-title { color: var(--primary); font-size: 1.35rem; text-transform: uppercase; letter-spacing: 1.5px; }
+        .student-name { font-size: 2rem; font-weight: 800; color: var(--text-main); margin: 12px 0 4px; }
+        .student-account { font-size: 1.05rem; color: var(--text-sec); }
+
+        .summary-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+        }
+        .metric-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .metric-val { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .metric-lbl { font-size: 0.82rem; color: var(--text-sec); margin-top: 4px; }
+
+        .result-msg {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+        .result-msg.pass { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .result-msg.mid { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .result-msg.fail { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        .foda-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .foda-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .foda-card.f { border-left-color: #16a34a; }
+        .foda-card.o { border-left-color: #0284c7; }
+        .foda-card.d { border-left-color: #dc2626; }
+        .foda-card.a { border-left-color: #d97706; }
+        .foda-card h4 { font-size: 0.98rem; margin-bottom: 8px; color: var(--text-main); }
+        .foda-card ul { padding-left: 18px; font-size: 0.9rem; line-height: 1.5; color: #334155; }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            margin-top: 22px;
+        }
+        .date-time { margin-top: 14px; font-size: 0.85rem; color: var(--text-sec); text-align: center; }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 650px) {
+            .foda-grid { grid-template-columns: 1fr; }
+            .card-body { padding: 22px; }
+            .student-name { font-size: 1.55rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-brand">UNAH · Diagnóstico Ingeniería (60 min)</div>
+    <div id="timer-badge" class="timer-badge">60:00</div>
+</header>
+
+<main>
+    <div class="container">
+        <!-- LOGIN -->
+        <section id="login-screen" class="card-body">
+            <div class="logos-container">
+                <img src="https://tecdanli.unah.edu.hn/dmsdocument/18948-campus-el-paraiso-color-b-png" alt="Logo UNAH">
+                <img src="https://curc.unah.edu.hn/assets/assets/careers/icons/ia.png" alt="Logo Ingeniería">
+            </div>
+
+            <h1 class="login-title">Diagnóstico de Admisión: Perfil Ingeniería</h1>
+            <p class="login-desc">
+                Evaluación diagnóstica de <strong>20 reactivos</strong> (Matemática y Ciencias Naturales/Física/Química) con dificultad progresiva, desde fundamentos hasta el nivel mínimo esperado para aspirantes a Ingeniería en la UNAH.
+            </p>
+
+            <div class="login-instructions">
+                <strong>Instrucciones:</strong> Cuenta con <strong>60 minutos</strong> para completar la prueba. Cada pregunta muestra su retroalimentación al validar. Al finalizar, se generará su <strong>tarjeta de resultado y mini análisis FODA</strong> por áreas.
+            </div>
+
+            <div class="form-group">
+                <label for="inp-name">Nombre Completo del Estudiante</label>
+                <input type="text" id="inp-name" placeholder="Ej. Ana María López Flores" required>
+            </div>
+            <div class="form-group">
+                <label for="inp-account">Número de Identidad o Cuenta (11 a 13 dígitos)</label>
+                <input type="text" id="inp-account" placeholder="Ej. 20261000000" maxlength="13" required>
+            </div>
+
+            <button id="btn-start" class="btn btn-primary" disabled>Comenzar Diagnóstico (60 min)</button>
+            <p class="teacher-info">Tutoría Académica · MSc. Ing. Alejandro Rivera</p>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz-screen" class="card-body hidden">
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div class="question-header">
+                <span id="q-number" class="q-number">Pregunta 1 / 20</span>
+                <div class="q-meta">
+                    <span id="q-area" class="q-tag">Área</span>
+                    <span id="q-level" class="q-tag">Nivel</span>
+                </div>
+            </div>
+
+            <h2 id="q-text" class="question-text"></h2>
+            <div id="q-figure" class="figure-box hidden"></div>
+            <div id="q-options" class="options-grid"></div>
+            <div id="feedback-box" class="feedback-box"></div>
+
+            <div class="nav-actions">
+                <button id="btn-next" class="btn btn-nav" disabled>Validar respuesta</button>
+            </div>
+        </section>
+
+        <!-- RESULTS + FODA -->
+        <section id="result-screen" class="card-body hidden">
+            <div class="diploma-box">
+                <div class="diploma-header">
+                    <h2 class="diploma-title">Tarjeta de Resultado Diagnóstico · Ingeniería</h2>
+                    <div id="res-name" class="student-name"></div>
+                    <div id="res-account" class="student-account"></div>
+                </div>
+
+                <div class="summary-strip">
+                    <div class="metric-card">
+                        <div id="res-score" class="metric-val">0 / 20</div>
+                        <div class="metric-lbl">Puntaje Final</div>
+                    </div>
+                    <div class="metric-card">
+                        <div id="res-pct" class="metric-val">0%</div>
+                        <div class="metric-lbl">Porcentaje de Acierto</div>
+                    </div>
+                    <div class="metric-card">
+                        <div id="res-time" class="metric-val">00:00</div>
+                        <div class="metric-lbl">Tiempo Utilizado</div>
+                    </div>
+                </div>
+
+                <div id="res-msg" class="result-msg"></div>
+
+                <h3 style="color: var(--primary); margin-bottom: 6px; font-size: 1.15rem;">Mini Análisis FODA Académico</h3>
+                <div class="foda-grid">
+                    <div class="foda-card f">
+                        <h4>Fortalezas (F)</h4>
+                        <ul id="foda-f"></ul>
+                    </div>
+                    <div class="foda-card d">
+                        <h4>Debilidades (D)</h4>
+                        <ul id="foda-d"></ul>
+                    </div>
+                    <div class="foda-card o">
+                        <h4>Oportunidades (O)</h4>
+                        <ul id="foda-o"></ul>
+                    </div>
+                    <div class="foda-card a">
+                        <h4>Amenazas (A)</h4>
+                        <ul id="foda-a"></ul>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Recomendación de tutoría:</strong> Tome captura de pantalla de esta tarjeta y compártala con su tutor para priorizar las sesiones en los bloques con menor rendimiento.
+                </div>
+
+                <p id="res-date" class="date-time"></p>
+                <button id="btn-restart" class="btn btn-primary" style="margin-top: 22px;">Nuevo Diagnóstico</button>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script>
+    // Opcional: conecta tu Google Form si deseas registro remoto
+    const FORM_URL = "";
+    const ENTRY_NAME = "";
+    const ENTRY_ACCOUNT = "";
+    const ENTRY_SCORE = "";
+
+    const TOTAL_SECONDS = 60 * 60; // 60 minutos
+
+    const rawQuestions = [
+        // --- MATEMÁTICA (12 reactivos: básico -> intermedio -> pre-ingeniería) ---
+        {
+            id: 1, area: 'Matemática', block: 'Aritmética y Proporciones', level: 'Básico', type: 'mc',
+            text: 'Un plano de una pieza mecánica está a escala 1 : 250. Si un eje mide 4.5 cm en el plano, ¿cuál es su longitud real en metros?',
+            options: ['11.25 m', '1.125 m', '112.5 m', '0.1125 m'],
+            correct: 0,
+            feedback: '4.5 cm × 250 = 1,125 cm. Dividiendo entre 100 cm/m obtenemos 11.25 m.'
+        },
+        {
+            id: 2, area: 'Matemática', block: 'Álgebra y Ecuaciones', level: 'Básico', type: 'mc',
+            text: 'Si 3x + 7 = 22, ¿cuál es el valor de 2x - 1?',
+            options: ['9', '10', '7', '11'],
+            correct: 0,
+            feedback: '3x = 15 → x = 5. Luego 2(5) - 1 = 10 - 1 = 9.'
+        },
+        {
+            id: 3, area: 'Matemática', block: 'Geometría y Trigonometría', level: 'Básico', type: 'mc',
+            text: 'En el triángulo rectángulo de la figura, calcule la longitud de la hipotenusa c.',
+            svg: `<svg width="240" height="145" viewBox="0 0 240 145">
+                <polygon points="35,120 185,120 35,30" fill="#dbeafe" stroke="#003399" stroke-width="2.5"/>
+                <rect x="35" y="106" width="14" height="14" fill="none" stroke="#003399" stroke-width="1.8"/>
+                <text x="102" y="138" font-size="13" fill="#1e293b" font-weight="bold">6 cm</text>
+                <text x="4" y="80" font-size="13" fill="#1e293b" font-weight="bold">8 cm</text>
+                <text x="118" y="68" font-size="14" fill="#dc2626" font-weight="bold">c = ?</text>
+            </svg>`,
+            caption: 'Triángulo rectángulo con catetos de 6 cm y 8 cm.',
+            options: ['10 cm', '14 cm', '√14 cm', '12 cm'],
+            correct: 0,
+            feedback: 'Por Teorema de Pitágoras: c = √(6² + 8²) = √(36 + 64) = √100 = 10 cm.'
+        },
+        {
+            id: 4, area: 'Matemática', block: 'Álgebra y Ecuaciones', level: 'Intermedio', type: 'mc',
+            text: 'Factorice completamente la expresión: 4x² - 25.',
+            options: ['(2x - 5)(2x + 5)', '(2x - 5)²', '(4x - 5)(x + 5)', '(2x - 25)(2x + 1)'],
+            correct: 0,
+            feedback: 'Es una diferencia de cuadrados: a² - b² = (a - b)(a + b), con a = 2x y b = 5.'
+        },
+        {
+            id: 5, area: 'Matemática', block: 'Geometría y Trigonometría', level: 'Intermedio', type: 'mc',
+            text: 'En la figura, el área del cuadrado exterior es 100 cm² y está inscrito un círculo. ¿Cuál es el área sombreada (fuera del círculo pero dentro del cuadrado)?',
+            svg: `<svg width="210" height="180" viewBox="0 0 210 180">
+                <rect x="35" y="20" width="140" height="140" fill="#fde68a" stroke="#003399" stroke-width="2.5"/>
+                <circle cx="105" cy="90" r="70" fill="#ffffff" stroke="#003399" stroke-width="2"/>
+                <line x1="105" y1="90" x2="175" y2="90" stroke="#dc2626" stroke-width="1.8" stroke-dasharray="4,3"/>
+                <text x="128" y="84" font-size="12" fill="#dc2626" font-weight="bold">r = 5</text>
+                <text x="82" y="175" font-size="12" fill="#1e293b" font-weight="bold">Lado = 10</text>
+            </svg>`,
+            caption: 'Cuadrado de lado 10 cm con círculo inscrito de radio 5 cm.',
+            options: ['100 - 25π cm²', '100 - 10π cm²', '25π - 100 cm²', '50 - 25π cm²'],
+            correct: 0,
+            feedback: 'Área del cuadrado = 10² = 100 cm². Área del círculo = π(5²) = 25π cm². Área sombreada = 100 - 25π cm².'
+        },
+        {
+            id: 6, area: 'Matemática', block: 'Álgebra y Ecuaciones', level: 'Intermedio', type: 'mc',
+            text: 'Resuelva el sistema: x + y = 10 y 2x - y = 5.',
+            options: ['x = 5, y = 5', 'x = 6, y = 4', 'x = 4, y = 6', 'x = 7, y = 3'],
+            correct: 0,
+            feedback: 'Sumando ambas ecuaciones: 3x = 15 → x = 5; sustituyendo en x + y = 10 → y = 5.'
+        },
+        {
+            id: 7, area: 'Matemática', block: 'Aritmética y Proporciones', level: 'Intermedio', type: 'sa',
+            text: 'Una aleación contiene 35% de cobre en masa. ¿Cuántos kilogramos de cobre puro hay en 80 kg de aleación? (Escriba solo el número)',
+            correct: '28',
+            feedback: '0.35 × 80 kg = 28 kg de cobre.'
+        },
+        {
+            id: 8, area: 'Matemática', block: 'Geometría y Trigonometría', level: 'Pre-Ingeniería', type: 'mc',
+            text: 'En un triángulo rectángulo, si cos(θ) = 3/5 (con θ agudo), ¿cuál es el valor de tan(θ)?',
+            options: ['4/3', '3/4', '5/4', '4/5'],
+            correct: 0,
+            feedback: 'Cateto adyacente = 3, hipotenusa = 5 → cateto opuesto = 4. Por tanto, tan(θ) = opuesto/adyacente = 4/3.'
+        },
+        {
+            id: 9, area: 'Matemática', block: 'Funciones y Gráficas', level: 'Pre-Ingeniería', type: 'mc',
+            text: 'Observe la recta que pasa por los puntos (0, 2) y (4, 10). ¿Cuál es su pendiente m?',
+            svg: `<svg width="230" height="150" viewBox="0 0 230 150">
+                <line x1="30" y1="125" x2="210" y2="125" stroke="#475569" stroke-width="2"/>
+                <line x1="30" y1="125" x2="30" y2="15" stroke="#475569" stroke-width="2"/>
+                <line x1="30" y1="100" x2="170" y2="30" stroke="#003399" stroke-width="2.5"/>
+                <circle cx="30" cy="100" r="4" fill="#dc2626"/>
+                <circle cx="170" cy="30" r="4" fill="#dc2626"/>
+                <text x="38" y="103" font-size="11" fill="#1e293b">(0, 2)</text>
+                <text x="140" y="24" font-size="11" fill="#1e293b">(4, 10)</text>
+            </svg>`,
+            caption: 'Recta en el plano cartesiano.',
+            options: ['2', '1/2', '3', '4'],
+            correct: 0,
+            feedback: 'm = (y₂ - y₁) / (x₂ - x₁) = (10 - 2) / (4 - 0) = 8 / 4 = 2.'
+        },
+        {
+            id: 10, area: 'Matemática', block: 'Álgebra y Ecuaciones', level: 'Pre-Ingeniería', type: 'mc',
+            text: '¿Cuáles son las soluciones reales de la ecuación cuadrática x² - 5x + 6 = 0?',
+            options: ['x = 2 y x = 3', 'x = -2 y x = -3', 'x = 1 y x = 6', 'x = -1 y x = -6'],
+            correct: 0,
+            feedback: 'Factorizando: (x - 2)(x - 3) = 0 → x₁ = 2, x₂ = 3.'
+        },
+        {
+            id: 11, area: 'Matemática', block: 'Funciones y Gráficas', level: 'Pre-Ingeniería', type: 'mc',
+            text: 'Si log₁₀(x) = 3, ¿cuál es el valor de x?',
+            options: ['1000', '30', '100', '300'],
+            correct: 0,
+            feedback: 'Por definición de logaritmo en base 10: x = 10³ = 1000.'
+        },
+        {
+            id: 12, area: 'Matemática', block: 'Geometría y Trigonometría', level: 'Pre-Ingeniería', type: 'mc',
+            text: 'Un tanque cilíndrico tiene radio r = 2 m y altura h = 5 m. ¿Cuál es su volumen aproximado (use π ≈ 3.14)?',
+            options: ['62.8 m³', '31.4 m³', '20 m³', '125.6 m³'],
+            correct: 0,
+            feedback: 'V = π · r² · h ≈ 3.14 × 2² × 5 = 3.14 × 20 = 62.8 m³.'
+        },
+
+        // --- CIENCIAS: FÍSICA, QUÍMICA Y BIOLOGÍA/MÉTODO CIENTÍFICO (8 reactivos) ---
+        {
+            id: 13, area: 'Ciencias', block: 'Física Mecánica', level: 'Básico', type: 'mc',
+            text: 'Un vehículo recorre 180 km en 3 horas con velocidad constante. ¿Cuál es su rapidez en km/h?',
+            options: ['60 km/h', '540 km/h', '30 km/h', '0.016 km/h'],
+            correct: 0,
+            feedback: 'v = d / t = 180 km / 3 h = 60 km/h.'
+        },
+        {
+            id: 14, area: 'Ciencias', block: 'Física Mecánica', level: 'Intermedio', type: 'mc',
+            text: 'Sobre un bloque de 5 kg en una superficie horizontal sin fricción actúan las fuerzas mostradas. ¿Cuál es la fuerza neta en el eje x?',
+            svg: `<svg width="250" height="120" viewBox="0 0 250 120">
+                <line x1="15" y1="88" x2="235" y2="88" stroke="#64748b" stroke-width="2"/>
+                <rect x="95" y="48" width="60" height="40" fill="#bfdbfe" stroke="#003399" stroke-width="2"/>
+                <text x="111" y="73" font-size="13" font-weight="bold" fill="#1e293b">5 kg</text>
+                <line x1="155" y1="68" x2="215" y2="68" stroke="#16a34a" stroke-width="2.5"/>
+                <polygon points="215,63 225,68 215,73" fill="#16a34a"/>
+                <text x="168" y="58" font-size="11" font-weight="bold" fill="#16a34a">25 N →</text>
+                <line x1="95" y1="68" x2="45" y2="68" stroke="#dc2626" stroke-width="2.5"/>
+                <polygon points="45,63 35,68 45,73" fill="#dc2626"/>
+                <text x="38" y="58" font-size="11" font-weight="bold" fill="#dc2626">← 10 N</text>
+            </svg>`,
+            caption: 'Diagrama horizontal de fuerzas sobre una masa de 5 kg.',
+            options: ['15 N a la derecha', '35 N a la derecha', '15 N a la izquierda', '5 N a la derecha'],
+            correct: 0,
+            feedback: 'F_neta = 25 N (derecha) - 10 N (izquierda) = 15 N hacia la derecha.'
+        },
+        {
+            id: 15, area: 'Ciencias', block: 'Física Mecánica', level: 'Pre-Ingeniería', type: 'mc',
+            text: 'Con la fuerza neta de 15 N del problema anterior sobre la masa de 5 kg, ¿cuál es la aceleración del bloque según la 2.ª Ley de Newton?',
+            options: ['3 m/s²', '75 m/s²', '0.33 m/s²', '10 m/s²'],
+            correct: 0,
+            feedback: 'Por F = m · a → a = F / m = 15 N / 5 kg = 3 m/s².'
+        },
+        {
+            id: 16, area: 'Ciencias', block: 'Química General', level: 'Básico', type: 'mc',
+            text: '¿Cuántos átomos de oxígeno hay en una molécula de ácido sulfúrico (H₂SO₄)?',
+            options: ['4', '2', '1', '7'],
+            correct: 0,
+            feedback: 'El subíndice 4 junto al símbolo O indica 4 átomos de oxígeno por molécula de H₂SO₄.'
+        },
+        {
+            id: 17, area: 'Ciencias', block: 'Química General', level: 'Intermedio', type: 'mc',
+            text: 'Al balancear la ecuación de combustión del metano: CH₄ + O₂ → CO₂ + H₂O, ¿qué coeficiente corresponde al O₂?',
+            options: ['2', '1', '3', '4'],
+            correct: 0,
+            feedback: 'Ecuación balanceada: CH₄ + 2O₂ → CO₂ + 2H₂O (4 oxígenos a cada lado).'
+        },
+        {
+            id: 18, area: 'Ciencias', block: 'Química General', level: 'Pre-Ingeniería', type: 'mc',
+            text: 'Si una disolución acuosa tiene un pH igual a 3, ¿qué carácter presenta respecto al agua neutra (pH = 7)?',
+            options: ['Ácido, con mayor concentración de iones H⁺', 'Básico o alcalino, con mayor concentración de OH⁻', 'Neutro, con igual concentración de H⁺ y OH⁻', 'No tiene iones disueltos'],
+            correct: 0,
+            feedback: 'Valores de pH menores que 7 corresponden a disoluciones ácidas con mayor concentración de iones hidrógeno (H⁺).'
+        },
+        {
+            id: 19, area: 'Ciencias', block: 'Ciencias Naturales y Método', level: 'Básico', type: 'mc',
+            text: 'En un experimento sobre crecimiento de plantas con distintos fertilizantes, la cantidad de fertilizante aplicada es:',
+            options: ['La variable independiente', 'La variable dependiente', 'El grupo control', 'Una constante universal'],
+            correct: 0,
+            feedback: 'La variable independiente es la que el investigador manipula deliberadamente para observar su efecto en la variable dependiente (crecimiento).'
+        },
+        {
+            id: 20, area: 'Ciencias', block: 'Ciencias Naturales y Método', level: 'Intermedio', type: 'mc',
+            text: '¿Cuál es la función principal de las mitocondrias en una célula eucariota?',
+            options: ['Generar energía (ATP) mediante respiración celular', 'Realizar fotosíntesis usando clorofila', 'Sintetizar lípidos exclusivamente en plantas', 'Almacenar la información genética en el núcleo'],
+            correct: 0,
+            feedback: 'Las mitocondrias realizan la respiración celular aeróbica y producen ATP, la principal moneda energética celular.'
+        }
+    ];
+
+    const STORAGE_KEY = 'unah_ing_diagnostico_v1';
+
+    let state = {
+        name: '',
+        account: '',
+        score: 0,
+        currentIndex: 0,
+        remainingSeconds: TOTAL_SECONDS,
+        questions: [],
+        validated: [],
+        userAnswers: [],
+        startedAt: null,
+        finished: false
+    };
+
+    let timerInterval = null;
+
+    const loginScreen = document.getElementById('login-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const timerBadge = document.getElementById('timer-badge');
+
+    const inpName = document.getElementById('inp-name');
+    const inpAccount = document.getElementById('inp-account');
+    const btnStart = document.getElementById('btn-start');
+
+    const progressBar = document.getElementById('progress-bar');
+    const qNumber = document.getElementById('q-number');
+    const qArea = document.getElementById('q-area');
+    const qLevel = document.getElementById('q-level');
+    const qText = document.getElementById('q-text');
+    const qFigure = document.getElementById('q-figure');
+    const qOptions = document.getElementById('q-options');
+    const feedbackBox = document.getElementById('feedback-box');
+    const btnNext = document.getElementById('btn-next');
+
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        try {
+            state = JSON.parse(raw);
+            return Array.isArray(state.questions) && state.questions.length === rawQuestions.length;
+        } catch {
+            return false;
+        }
+    }
+
+    function clearState() {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+
+    function shuffleArray(arr) {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    }
+
+    function prepareQuestions() {
+        state.questions = rawQuestions.map(q => {
+            const item = { ...q };
+            if (q.type === 'mc') {
+                const idx = shuffleArray(q.options.map((_, i) => i));
+                item.shuffledOptions = idx.map(i => q.options[i]);
+                item.shuffledCorrect = idx.indexOf(q.correct);
+            }
+            return item;
+        });
+        state.validated = new Array(state.questions.length).fill(false);
+        state.userAnswers = new Array(state.questions.length).fill(null);
+        state.score = 0;
+        state.currentIndex = 0;
+        state.remainingSeconds = TOTAL_SECONDS;
+        state.startedAt = Date.now();
+        state.finished = false;
+    }
+
+    function formatTime(sec) {
+        const s = Math.max(0, sec);
+        const mins = Math.floor(s / 60);
+        const rem = s % 60;
+        return `${String(mins).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
+    }
+
+    function updateTimerUI() {
+        timerBadge.textContent = formatTime(state.remainingSeconds);
+        timerBadge.classList.toggle('urgent', state.remainingSeconds <= 300);
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        updateTimerUI();
+        timerInterval = setInterval(() => {
+            if (state.finished) {
+                clearInterval(timerInterval);
+                return;
+            }
+            state.remainingSeconds--;
+            updateTimerUI();
+            if (state.remainingSeconds % 5 === 0) saveState();
+            if (state.remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                finishExam();
+            }
+        }, 1000);
+    }
+
+    function validateLogin() {
+        const okName = inpName.value.trim().length >= 3;
+        const okAcc = /^\d{11,13}$/.test(inpAccount.value.trim());
+        btnStart.disabled = !(okName && okAcc);
+    }
+
+    inpName.addEventListener('input', validateLogin);
+    inpAccount.addEventListener('input', e => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 13);
+        validateLogin();
+    });
+
+    btnStart.addEventListener('click', () => {
+        state.name = inpName.value.trim();
+        state.account = inpAccount.value.trim();
+        prepareQuestions();
+        saveState();
+        showQuiz();
+        startTimer();
+    });
+
+    function showLogin() {
+        loginScreen.classList.remove('hidden');
+        quizScreen.classList.add('hidden');
+        resultScreen.classList.add('hidden');
+    }
+
+    function showQuiz() {
+        loginScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
+        resultScreen.classList.add('hidden');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const q = state.questions[state.currentIndex];
+        const total = state.questions.length;
+        const isVal = state.validated[state.currentIndex];
+
+        progressBar.style.width = `${(state.currentIndex / total) * 100}%`;
+        qNumber.textContent = `Pregunta ${state.currentIndex + 1} / ${total}`;
+        qArea.textContent = `${q.area} · ${q.block}`;
+        qLevel.textContent = `Nivel: ${q.level}`;
+        qText.textContent = q.text;
+
+        if (q.svg) {
+            qFigure.classList.remove('hidden');
+            qFigure.innerHTML = `${q.svg}<div class="figure-caption">${q.caption || ''}</div>`;
+        } else {
+            qFigure.classList.add('hidden');
+            qFigure.innerHTML = '';
+        }
+
+        qOptions.innerHTML = '';
+        feedbackBox.className = 'feedback-box';
+        feedbackBox.innerHTML = '';
+
+        if (!isVal) {
+            btnNext.textContent = 'Validar respuesta';
+            btnNext.disabled = state.userAnswers[state.currentIndex] === null || state.userAnswers[state.currentIndex] === '';
+        } else {
+            btnNext.textContent = state.currentIndex === total - 1 ? 'Ver Resultado y FODA' : 'Siguiente →';
+            btnNext.disabled = false;
+        }
+
+        if (q.type === 'mc') {
+            const letters = ['A', 'B', 'C', 'D'];
+            q.shuffledOptions.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${opt}</span>`;
+                if (state.userAnswers[state.currentIndex] === i) btn.classList.add('selected');
+                btn.addEventListener('click', () => {
+                    if (state.validated[state.currentIndex]) return;
+                    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    state.userAnswers[state.currentIndex] = i;
+                    saveState();
+                    btnNext.disabled = false;
+                });
+                qOptions.appendChild(btn);
+            });
+        } else if (q.type === 'sa') {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'sa-input';
+            input.placeholder = 'Escriba su respuesta numérica...';
+            if (state.userAnswers[state.currentIndex] !== null) {
+                input.value = state.userAnswers[state.currentIndex];
+            }
+            input.disabled = isVal;
+            input.addEventListener('input', () => {
+                if (state.validated[state.currentIndex]) return;
+                state.userAnswers[state.currentIndex] = input.value.trim();
+                saveState();
+                btnNext.disabled = input.value.trim().length === 0;
+            });
+            qOptions.appendChild(input);
+        }
+
+        if (isVal) {
+            applyValidationStyles(q, false);
+        }
+    }
+
+    function checkAnswerCorrect(q, ans) {
+        if (ans === null || ans === undefined || ans === '') return false;
+        if (q.type === 'mc') return ans === q.shuffledCorrect;
+        if (q.type === 'sa') {
+            const normUser = String(ans).trim().replace(',', '.');
+            const normCorr = String(q.correct).trim().replace(',', '.');
+            return normUser === normCorr;
+        }
+        return false;
+    }
+
+    function applyValidationStyles(q, countScore) {
+        const ans = state.userAnswers[state.currentIndex];
+        const ok = checkAnswerCorrect(q, ans);
+
+        if (q.type === 'mc') {
+            document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                btn.classList.add('validated');
+                if (i === q.shuffledCorrect) btn.classList.add('correct');
+                else if (i === ans) btn.classList.add('incorrect');
+            });
+        } else if (q.type === 'sa') {
+            const input = document.querySelector('.sa-input');
+            if (input) {
+                input.disabled = true;
+                input.classList.add(ok ? 'correct' : 'incorrect');
+            }
+        }
+
+        if (countScore && ok) {
+            state.score++;
+        }
+
+        feedbackBox.classList.add('show', ok ? 'correct' : 'incorrect');
+        feedbackBox.innerHTML = `<div class="feedback-title">${ok ? '✓ Respuesta correcta' : '✗ Respuesta incorrecta'}</div><div>${q.feedback}</div>`;
+    }
+
+    btnNext.addEventListener('click', () => {
+        const q = state.questions[state.currentIndex];
+        if (!state.validated[state.currentIndex]) {
+            applyValidationStyles(q, true);
+            state.validated[state.currentIndex] = true;
+            saveState();
+            btnNext.textContent = state.currentIndex === state.questions.length - 1 ? 'Ver Resultado y FODA' : 'Siguiente →';
+            btnNext.disabled = false;
+        } else {
+            if (state.currentIndex < state.questions.length - 1) {
+                state.currentIndex++;
+                saveState();
+                renderQuestion();
+            } else {
+                finishExam();
+            }
+        }
+    });
+
+    function computeFODA() {
+        const stats = {};
+        state.questions.forEach((q, idx) => {
+            const key = `${q.area}: ${q.block}`;
+            if (!stats[key]) stats[key] = { correct: 0, total: 0, area: q.area };
+            stats[key].total++;
+            if (checkAnswerCorrect(q, state.userAnswers[idx])) {
+                stats[key].correct++;
+            }
+        });
+
+        const strengths = [];
+        const weaknesses = [];
+
+        Object.entries(stats).forEach(([label, s]) => {
+            const ratio = s.correct / s.total;
+            if (ratio >= 0.67) strengths.push(`${label} (${s.correct}/${s.total} aciertos)`);
+            else weaknesses.push(`${label} (${s.correct}/${s.total} aciertos)`);
+        });
+
+        const fList = document.getElementById('foda-f');
+        const dList = document.getElementById('foda-d');
+        const oList = document.getElementById('foda-o');
+        const aList = document.getElementById('foda-a');
+
+        fList.innerHTML = '';
+        dList.innerHTML = '';
+        oList.innerHTML = '';
+        aList.innerHTML = '';
+
+        if (strengths.length === 0) strengths.push('Base inicial en construcción; oportunidad de consolidar conceptos desde cero con tutoría.');
+        strengths.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            fList.appendChild(li);
+        });
+
+        if (weaknesses.length === 0) weaknesses.push('Sin áreas críticas por debajo del 67%; se recomienda afinar rapidez en reactivos de nivel pre-ingeniería.');
+        weaknesses.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            dList.appendChild(li);
+        });
+
+        [
+            'Planificar sesiones de tutoría focalizadas en los bloques con menor puntaje.',
+            'Practicar lectura de figuras geométricas y diagramas físicos sin calculadora dependiente.'
+        ].forEach(txt => {
+            const li = document.createElement('li');
+            li.textContent = txt;
+            oList.appendChild(li);
+        });
+
+        [
+            'El examen de admisión exige resolver reactivos con precisión bajo límite de tiempo.',
+            'Dejar vacíos álgebra, trigonometría o leyes físicas básicas dificulta el avance en cursos de Ingeniería.'
+        ].forEach(txt => {
+            const li = document.createElement('li');
+            li.textContent = txt;
+            aList.appendChild(li);
+        });
+    }
+
+    function finishExam() {
+        state.finished = true;
+        clearInterval(timerInterval);
+        saveState();
+
+        loginScreen.classList.add('hidden');
+        quizScreen.classList.add('hidden');
+        resultScreen.classList.remove('hidden');
+
+        const total = state.questions.length;
+        const pct = Math.round((state.score / total) * 100);
+        const elapsed = TOTAL_SECONDS - Math.max(0, state.remainingSeconds);
+
+        document.getElementById('res-name').textContent = state.name;
+        document.getElementById('res-account').textContent = `ID / Cuenta: ${state.account}`;
+        document.getElementById('res-score').textContent = `${state.score} / ${total}`;
+        document.getElementById('res-pct').textContent = `${pct}%`;
+        document.getElementById('res-time').textContent = formatTime(elapsed);
+
+        const msgEl = document.getElementById('res-msg');
+        if (pct >= 75) {
+            msgEl.className = 'result-msg pass';
+            msgEl.textContent = 'Nivel competitivo para perfil de Ingeniería: muestra dominio sólido de bases matemáticas y científicas.';
+        } else if (pct >= 50) {
+            msgEl.className = 'result-msg mid';
+            msgEl.textContent = 'Nivel intermedio en desarrollo: cuenta con bases útiles, pero conviene reforzar temas clave antes del examen.';
+        } else {
+            msgEl.className = 'result-msg fail';
+            msgEl.textContent = 'Nivel inicial: se recomienda un plan de refuerzo estructurado desde fundamentos hasta nivel pre-ingeniería.';
+        }
+
+        computeFODA();
+        document.getElementById('res-date').textContent = `Evaluación completada: ${new Date().toLocaleString('es-HN')}`;
+
+        if (FORM_URL && ENTRY_NAME && ENTRY_ACCOUNT && ENTRY_SCORE) {
+            const fd = new FormData();
+            fd.append(ENTRY_NAME, state.name);
+            fd.append(ENTRY_ACCOUNT, state.account);
+            fd.append(ENTRY_SCORE, `${state.score}/${total} (${pct}%)`);
+            fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: fd }).catch(() => {});
+        }
+    }
+
+    document.getElementById('btn-restart').addEventListener('click', () => {
+        if (confirm('¿Desea iniciar un nuevo diagnóstico? Se reiniciará el progreso actual.')) {
+            clearState();
+            location.reload();
+        }
+    });
+
+    function init() {
+        if (loadState()) {
+            if (state.finished || state.remainingSeconds <= 0) {
+                finishExam();
+            } else {
+                showQuiz();
+                startTimer();
+            }
+        } else {
+            updateTimerUI();
+            showLogin();
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
